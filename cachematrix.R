@@ -1,22 +1,33 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Matrix inversion is usually a costly computation and there may be some benefit 
+## to caching the inverse of a matrix rather than compute it repeatedly.
+## This will be done using two functions, makeCacheMatrix, and cacheSolve.
 
 ## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
-## makeCacheMatrix actually creates a list containing a function to
-## 1. set the value of the matrix
-## 2. get the value of the matrix
-## 3. set the value of the inverse
-## 4. get the value of the inverse 
+##                  makeCacheMatrix actually creates a list containing a function to
+##                  1. set the matrix
+##                  2. get the matrix
+##                  3. set the inverse of the matrix
+##                  4. get the inverse of the matrix
 
 makeCacheMatrix <- function(x = matrix()) {
   m <- NULL
+  
+  #"set" is a function to set x as y (in the global environment)
   set <- function(y) {
     x <<- y
     m <<- NULL
   }
+  
+  #"get" is a function to return the original matrix, x
   get <- function() x
+  
+  #"setinverse" is a function to solve a matrix, m
   setinverse <- function(solve) m <<- solve
+  
+  #"getinverse" is a function to retrieve the inverse of the matrix, m
   getinverse <- function() m
+  
+  #returns a list of the above functions
   list(set = set, get = get,
        setinverse = setinverse,
        getinverse = getinverse)
@@ -24,16 +35,16 @@ makeCacheMatrix <- function(x = matrix()) {
 
 
 ## cacheSolve: This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
-## If the inverse has already been calculated (and the matrix has not changed), 
-## then the cachesolve should retrieve the inverse from the cache.
+##             If the inverse has already been calculated (and the matrix has not changed), 
+##             then the cachesolve should retrieve the inverse from the cache.
 
 cacheSolve <- function(x, ...) {
   ## Return a matrix that is the inverse of 'x'
   
-  #attempt to retrieve a cached version of the inverse matrix (if no cache, m becomes NULL)
+  #attempt to retrieve a cached version of the inverse matrix of x (if no cache, m becomes NULL)
   m <- x$getinverse() 
   
-  #if m is not null, it will return m, the cached inverse matrix
+  #if there is a cached version, then m is not null, and this will return m, the cached inverse matrix, and exit the function
   if(!is.null(m)) { 
     message("getting cached data")
     return(m) #also exits the function
